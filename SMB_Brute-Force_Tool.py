@@ -1,8 +1,22 @@
 import argparse
+import socket
 from impacket.smbconnection import SMBConnection
 
 # SMB Brute Force Tool
 # MJTRK01
+
+
+
+def check_target_connection(ip):
+
+    print(f"[*] Checking Connection To {ip}...")
+    try:
+        with socket.create_connection((ip, 445), timeout=5) as conn:
+            print(f"[+] Connection to {ip} Successful ...")
+            return True
+    except socket.timeout, socket.error as exp:
+        print(f"[-] Unable to connect to {ip} : {exp}")
+        return False
 
 def brute_force_smb(ip_address, usernames_file, passwords_file):
 
@@ -42,5 +56,8 @@ if __name__ == "__main__":
     parser.add_argument("passwords_file", help="File Containing Passwords")
     args = parser.parse_args()
 
-    # Running the brute force function
-    brute_force_smb(args.ip_address, args.usernames_file, args.passwords_file)
+    # Check The Target IP Connection and Running the brute force 
+    if check_target_connection(args.ip_address):
+        brute_force_smb(args.ip_address, args.usernames_file, args.passwords_file)
+    else:
+        print("[!] Exiting: Unable to reach IP Target.")
