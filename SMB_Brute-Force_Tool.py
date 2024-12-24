@@ -14,7 +14,7 @@ def check_target_connection(ip):
         with socket.create_connection((ip, 445), timeout=5) as conn:
             print(f"[+] Connection to {ip} Successful ...")
             return True
-    except socket.timeout, socket.error as exp:
+    except (socket.timeout, socket.error) as exp:
         print(f"[-] Unable to connect to {ip} : {exp}")
         return False
 
